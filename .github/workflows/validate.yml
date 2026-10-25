@@ -1,0 +1,20 @@
+name: validate
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate marketplace and plugin
+        run: |
+          npx -y @anthropic-ai/claude-code plugin validate . --strict
+          npx -y @anthropic-ai/claude-code plugin validate ./plugins/closetmatchr-staging --strict
+      - name: Check content policy
+        run: ./scripts/check.sh

@@ -1,0 +1,15 @@
+{
+  "name": "closetmatchr",
+  "description": "ClosetMatchR plugins for Claude: connect Claude to your organization's ClosetMatchR ERP.",
+  "owner": {
+    "name": "ClosetMatchR",
+    "url": "https://github.com/ClosetMatchR"
+  },
+  "plugins": [
+    {
+      "name": "closetmatchr-staging",
+      "source": "./plugins/closetmatchr-staging",
+      "description": "STAGING ONLY: ClosetMatchR ERP connector (staging.closetmatchr.com) plus workflow skills. Not for production data."
+    }
+  ]
+}

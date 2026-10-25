@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "closetmatchr-staging": {
+      "type": "http",
+      "url": "https://staging.closetmatchr.com/mcp"
+    }
+  }
+}
