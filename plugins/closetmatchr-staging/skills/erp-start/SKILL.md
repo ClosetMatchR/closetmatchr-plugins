@@ -7,7 +7,7 @@ description: Start or orient work in a ClosetMatchR ERP organization through the
 
 This plugin connects to **ClosetMatchR staging** (`https://staging.closetmatchr.com/mcp`). Say so when it matters: staging is a test environment, not the production ERP.
 
-The connector exposes a small fixed toolset: `search`, `read`, `execute`, `save`, `activate`, plus any tools the organization's own server plugins add (`plugin_*`). The live environment is the source of truth; this skill only tells you where to look. The platform evolves faster than this plugin, so take code shapes and API names from the live docs, not from memory or from this file.
+The connector exposes a small fixed toolset: `search`, `read`, `execute`, `analyze` (read-only), `save`, `activate`, plus any tools the organization's own server plugins add (`plugin_*`). The live environment is the source of truth; this skill only tells you where to look. The platform evolves faster than this plugin, so take code shapes and API names from the live docs, not from memory or from this file.
 
 ## First steps (read-only)
 
@@ -21,10 +21,11 @@ The connector exposes a small fixed toolset: `search`, `read`, `execute`, `save`
 
    If it is not the organization the user expects, stop: they choose the organization while signing in, so they must disconnect and reconnect the connector.
 4. Before writing code or queries, `read` `/docs/api.md` and the relevant `/schemas/*.json`; use `search` for anything else (`/docs`, `/policies`, `/plugins`, `/runs`).
+5. For questions about the data (counts, revenue, stock, orders, statuses, trends), use `analyze` and follow the `erp-catalog` skill ("Questions about the data").
 
 A good first request to suggest: *"Read /AGENTS.md, tell me which organization is connected and show 5 articles. Don't change anything."* For that, `erp.articles.find({ limit: 5 })` (run with `yield*`) is enough.
 
-If `execute` fails with `contract_violation`, the code was not an Effect (for example `await` or an `async` function). Reread `/docs/effect.md` and rewrite it; do not retry the same code.
+If `execute` or `analyze` fails with `contract_violation`, or with a syntax error about `await`, the code was not an Effect (for example `return await erp.me()` or an `async` function). Reread `/docs/effect.md` and rewrite it with `yield*`; do not retry the same code.
 
 ## Rules that always apply
 
