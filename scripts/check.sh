@@ -11,6 +11,12 @@ bad=$(git ls-files | grep -Ev "$allowed" || true)
 url=$(node -e 'const c=require("./plugins/closetmatchr-staging/.mcp.json").mcpServers; const s=Object.values(c); if (s.length!==1) process.exit(2); console.log(s[0].type+" "+s[0].url+" "+Object.keys(s[0]).sort().join(","))')
 [ "$url" = "http https://staging.closetmatchr.com/mcp type,url" ] || { echo "Unexpected MCP config: $url"; exit 1; }
 
+# claude.ai marketplace sync strips plugin.json keys it does not know (it
+# stripped privacyPolicyUrl in 0.1.2 although `claude plugin validate --strict`
+# accepts it), so only keys the web sync is known to accept may ship.
+keys=$(node -e 'console.log(Object.keys(require("./plugins/closetmatchr-staging/.claude-plugin/plugin.json")).sort().join(","))')
+[ "$keys" = "author,description,displayName,homepage,keywords,license,name,repository,version" ] || { echo "Unexpected plugin.json keys: $keys"; exit 1; }
+
 for dir in hooks bin agents monitors commands; do
   [ ! -e "plugins/closetmatchr-staging/$dir" ] || { echo "Unexpected component: $dir"; exit 1; }
 done
