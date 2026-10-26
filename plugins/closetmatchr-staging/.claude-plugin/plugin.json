@@ -1,7 +1,7 @@
 {
   "name": "closetmatchr-staging",
   "displayName": "ClosetMatchR ERP (staging)",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "STAGING ONLY. Connects Claude to the ClosetMatchR ERP staging environment (https://staging.closetmatchr.com/mcp) via OAuth, with skills for discovery, catalogue history, server plugins and importers. Not connected to production.",
   "author": {
     "name": "ClosetMatchR",
@@ -16,6 +16,5 @@
     "fashion",
     "mcp",
     "staging"
-  ],
-  "privacyPolicyUrl": "https://closetmatchr.com/privacy"
+  ]
 }
