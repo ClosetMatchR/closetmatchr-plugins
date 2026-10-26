@@ -12,12 +12,12 @@ A production plugin will be added here once the production ERP connector is live
 
 - A remote MCP connector (HTTP, OAuth with dynamic client registration) to the ClosetMatchR ERP staging environment. No API keys, no local server, no hooks, no executables.
 - Skills that tell Claude how to work in ClosetMatchR:
-  - `erp-start`: confirm the connected organization and read `/AGENTS.md` before anything else.
-  - `erp-catalog`: articles, variants, history, compare and careful edits.
-  - `erp-plugins`: ClosetMatchR server plugins: copy, save, diagnostics, activate an exact version, roll back.
+  - `erp-start`: confirm the connected organization and read `/AGENTS.md` and the execution contract (`/docs/effect.md`) before anything else.
+  - `erp-catalog`: articles, variants, history, compare and edits.
+  - `erp-plugins`: ClosetMatchR server plugins as Effect programs, including own services via layers: copy, save, diagnostics, activate an exact version, roll back.
   - `erp-importer`: requirements for importers (no-op on unchanged data, complete snapshots, retries, customer edits, tenant boundary).
 
-The skills point Claude at the live documentation the connector serves (`/AGENTS.md`, `/docs`, `/schemas`); that documentation is the source of truth.
+The skills point Claude at the live documentation the connector serves (`/AGENTS.md`, `/docs`, `/schemas`); that documentation is the source of truth. Code Claude runs in ClosetMatchR (scripts and server plugins) follows the Effect execution contract `cmr.effect/1` described in `/docs/effect.md`; the skills read it from the live environment, so they follow whatever contract the connected environment serves.
 
 ## Install in Claude Code
 
@@ -67,7 +67,7 @@ You can also add the connector on its own, without the skills:
 
 ## Data and access
 
-Claude talks directly to ClosetMatchR at the URL above. What Claude can read or change is limited to the organization you choose at sign-in and to your role there; changes to your role apply immediately. The plugin itself stores nothing and contains no credentials. The skills ask Claude to confirm with you before any write. Privacy: [ClosetMatchR privacy policy](https://closetmatchr.com/privacy).
+Claude talks directly to ClosetMatchR at the URL above. What Claude can read or change is limited to the organization you choose at sign-in and to your role there; changes to your role apply immediately. The plugin itself stores nothing and contains no credentials. Effect and the skills grant no extra rights. The skills tell Claude to stay within what you asked for and to check with you when a value, selection or business rule does not follow from your request. Privacy: [ClosetMatchR privacy policy](https://closetmatchr.com/privacy).
 
 ## Versions
 
