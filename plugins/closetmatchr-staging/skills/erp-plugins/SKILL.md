@@ -74,4 +74,6 @@ Confirm the connected organization (`erp.me()`) before the first change. Reading
 - Network only to hosts the manifest allows; credentials are sealed secrets that a user stores via the portal, never in code, plugin config or chat.
 - Jobs and webhooks run under the plugin's service identity with the activated version pinned.
 
+For a one-off question about the data, do not build a plugin, page or endpoint: use `analyze` (see the `erp-catalog` skill). A plugin that shows figures repeatedly can use the same `erp.query.run` reads inside its export.
+
 Do not claim features the live docs do not describe.

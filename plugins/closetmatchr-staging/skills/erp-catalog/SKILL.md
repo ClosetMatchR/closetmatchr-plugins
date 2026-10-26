@@ -1,6 +1,6 @@
 ---
 name: erp-catalog
-description: Find, inspect, compare or update ClosetMatchR articles and variants, including who changed what and what a product looked like at an earlier time. Use for catalogue questions, data cleanup, history ("what changed", "who changed", "as of"), and bulk edits in ClosetMatchR.
+description: Find, inspect, compare or update ClosetMatchR articles and variants, including who changed what and what a product looked like at an earlier time, and answer read-only questions about the data (counts, orders, stock, statistics). Use for catalogue questions, data cleanup, history ("what changed", "who changed", "as of"), bulk edits and data analysis in ClosetMatchR.
 ---
 
 # Articles, variants and their history
@@ -22,6 +22,30 @@ return { count: page.items.length, hasMore: page.hasMore, sample: page.items.sli
 - Reuse existing core fields (for example `season`) and custom fields (`erp.fields`) before proposing a new field.
 - History: `erp.articles.history(id, { limit })` (versions with valid/system time and the changes with runId, actor, source), `compare({ ids | where, from, to })`, and `asOf` on `find`/`get`. `erp.changes.list({ since, runId, entity, objectId, actor, source })` answers "who changed what". `/docs/examples` has worked examples.
 - When you summarise, name the time basis (now, or the `asOf` moment) and cite ids.
+
+## Questions about the data
+
+Counts, totals, statistics and trends are reads: answer them with `analyze`, not `execute`. `analyze` takes the same Effect code, but the platform refuses every write, network call, tool and job, so nothing can change by accident. There is no separate statistics endpoint and no plugin is needed; `read` `/docs/query.md` for the current query shape and limits.
+
+1. **Discover the sources.** `erp.datasets.list()` shows which datasets you may read; `erp.datasets.describe(name)` shows columns, status values and relations. Orders can live in more than one source, for example orders recorded in ClosetMatchR itself (`orders`, `order_lines`, `returns`) and trade documents imported from an external ERP (`trade_documents`, `trade_lines`). An empty `orders` does not mean there was no trade, and a shipment is not an extra order: do not add sources together.
+2. **Check freshness.** Imported data is only as recent as its last published import (`trade_publications.published_at`). Compare that moment and the dates actually present with the period the user asks about. If the data covers only part of it, say so and do not present it as the current state of the month.
+3. **Check what statuses mean.** Group by the status columns first to see which values occur. A word like "processed", "revenue" or "active" has no fixed column: pick a definition from the real columns and values, name it (with period and time zone), and ask when several are reasonable. A status of `unknown` means the source code has not been confirmed; it is not "done".
+4. **Count one level at a time.** Documents (orders, shipments) and lines (order or trade lines) are different counts; say which one you report and never mix them in one number.
+
+```js
+// Fictional example: what is there for October, and how fresh is it?
+const sources = yield* erp.datasets.list()
+const published = yield* erp.query.run({ from: 'trade_publications', select: ['integration_id', 'published_at'] })
+const documents = yield* erp.query.run({
+  from: 'trade_documents',
+  where: { occurred_on: { gte: '2026-10-01', lt: '2026-11-01' } },
+  groupBy: ['kind', 'status', 'source_status'],
+  select: { kind: 'kind', status: 'status', sourceStatus: 'source_status', documents: { count: '*' } },
+})
+return { sources: sources.map(d => d.name), published: published.rows, documents: documents.rows }
+```
+
+In the answer, state the source, the publication moment, the period the data really covers, the definition used and whether you counted documents or lines.
 
 ## Change data
 

@@ -45,4 +45,4 @@ Settle these from the user's request and the source; ask only where they do not 
 
 ## Rollout
 
-Start read-only: fetch a small sample and show the mapping plus a dry-run diff (what would be updated, left unchanged, or cannot be matched). This is where unclear mappings surface; resolve them with the user. Then save, activate, run on a small batch, verify with `erp.runs.get` and `erp.changes.list({ runId })`, and widen.
+Start read-only: fetch a small sample and show the mapping plus a dry-run diff (what would be updated, left unchanged, or cannot be matched). This is where unclear mappings surface; resolve them with the user. Then save, activate, run on a small batch, verify with `erp.runs.get` and `erp.changes.list({ runId })`, and widen. To check imported data afterwards (counts per kind or status, what period it covers), use `analyze`, which cannot write; see the `erp-catalog` skill.
